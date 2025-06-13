@@ -1,16 +1,22 @@
 import java.util.ArrayList;
+import java.time.LocalDateTime;
 
 public class Order {
     private int orderId;
     private ArrayList<MenuItem> items;
+    private LocalDateTime orderTime;
 
     public Order(int orderId) {
         this.orderId = orderId;
         this.items = new ArrayList<>();
+        this.orderTime = LocalDateTime.now();
     }
 
     public int getOrderId() {
         return orderId;
+    }
+    public LocalDateTime getOrderTime() {
+        return orderTime;
     }
     
     public ArrayList<MenuItem> getItems() {

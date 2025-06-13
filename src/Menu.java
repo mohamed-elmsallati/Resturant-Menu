@@ -42,7 +42,11 @@ public class Menu {
                 currentCategory = item.getCategory();
                 System.out.println("\n=== " + currentCategory + " ===");
             }
-            System.out.printf("%2d. %-20s $%.2f Inventory: %s%n", i, item.getName(), item.getPrice(), item.getItemInventory().getWeeklyInventory());
+            Inventory inventory = Inventory.getInventoryByName(item.getName());
+            if (inventory == null) {
+                inventory = new Inventory(item.getName());
+            }  
+            System.out.printf("%2d. %-20s $%.2f Inventory: %s%n", i, item.getName(), item.getPrice(), inventory != null ? inventory.getWeeklyInventory() : 0);
         }
     }
 }
