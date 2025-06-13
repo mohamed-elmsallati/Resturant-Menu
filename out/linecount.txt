@@ -1,0 +1,26 @@
+===============================================================================
+EXTENSION NAME : linecount
+EXTENSION VERSION : 0.1.7
+-------------------------------------------------------------------------------
+count time : 2025-06-09 15:49:00
+count workspace : c:\Users\moham\Documents\Temp\Resturant Menu
+total files : 15
+total code lines : 555
+total blank lines : 111
+
+bin\Category.class, it is a binary file.
+bin\Inventory.class, it is a binary file.
+bin\Main.class, it is a binary file.
+bin\Menu.class, it is a binary file.
+bin\MenuItem.class, it is a binary file.
+bin\Order.class, it is a binary file.
+bin\RestaurantSystem.class, it is a binary file.
+README.md, code is 10, comment is 1, blank is 8.
+src\Category.java, code is 20, comment is 0, blank is 1.
+src\Inventory.java, code is 65, comment is 0, blank is 16.
+src\Main.java, code is 12, comment is 3, blank is 1.
+src\Menu.java, code is 43, comment is 0, blank is 5.
+src\MenuItem.java, code is 42, comment is 0, blank is 10.
+src\Order.java, code is 21, comment is 0, blank is 4.
+src\RestaurantSystem.java, code is 342, comment is 3, blank is 66.
+===============================================================================
