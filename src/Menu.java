@@ -46,7 +46,7 @@ public class Menu {
             if (inventory == null) {
                 inventory = new Inventory(item.getName());
             }  
-            System.out.printf("%2d. %-20s $%.2f Inventory: %s%n", i, item.getName(), item.getPrice(), inventory != null ? inventory.getWeeklyInventory() : 0);
+            System.out.printf("%2d. %-20s $%.2f Inventory: %s%n", i, item.getName(), item.getPrice(), inventory.getWeeklyInventory() );
         }
     }
 }

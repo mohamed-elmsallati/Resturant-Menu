@@ -177,6 +177,9 @@ public class RestaurantSystem {
                 continue;
             }
             itemInventory.withdraw(quantityInput);
+            if (itemInventory.getWeeklyInventory() < 5) {
+                System.out.println("Warning: Low inventory for " + itemInventory.getName() + " (" + itemInventory.getWeeklyInventory() + " left)");
+            }
 
             menuItem.setQuantity(quantityInput);
             System.out.println("You selected: " + menuItem.getName() + " x" + menuItem.getQuantity() +  " - $" + menuItem.getPrice());
@@ -212,7 +215,7 @@ public class RestaurantSystem {
 
         System.out.println("Please select an order to modify by entering the corresponding number (1-" + orders.size() + "): ");
         for (int i = 0; i < orders.size(); i++) {
-            System.out.println((i + 1) + ". Order ID: " + orders.get(i).getOrderId());
+            System.out.println((i + 1) + ". Order ID: " + orders.get(i).getOrderId() + ", Order Time: " + orders.get(i).getOrderTime());
         }
 
         System.out.print("Input: ");
@@ -246,7 +249,7 @@ public class RestaurantSystem {
             System.out.println("No orders available to cancel.");
             return;
         }
-        System.out.println("Cancelling an existing order. Order ID: " + orders.get(orders.size() - 1).getOrderId());
+        System.out.println("Cancelling an existing order. Order ID: " + orders.get(orders.size() - 1).getOrderId() + "order Time: " + orders.get(orders.size() - 1).getOrderTime());
         System.out.println("Please select an order to cancel by entering the corresponding number (1-" + orders.size() + "): ");
         for (int i = 0; i < orders.size(); i++) {
             System.out.println((i + 1) + ". Order ID: " + orders.get(i).getOrderId());
@@ -259,6 +262,17 @@ public class RestaurantSystem {
             System.out.println("Invalid order choice. Please try again.");
             return;
         }
+
+        for (int i = 0; i < orders.get(orderChoice - 1).getItems().size(); i++) {
+            MenuItem item = orders.get(orderChoice - 1).getItems().get(i);
+            Inventory inv = getInventoryByName(item.getName());
+            if (inv != null) {
+                inv.deposit(item.getQuantity());
+            } else {
+                System.out.println("Inventory not found for " + item.getName());
+            }
+        }
+
         Order selectedOrder = orders.get(orderChoice - 1); 
         orders.remove(selectedOrder); 
 
@@ -270,10 +284,10 @@ public class RestaurantSystem {
             System.out.println("No orders available to view.");
             return;
         }
-        System.out.println("Viewing an existing order. Order ID: " + orders.get(orders.size() - 1).getOrderId());
+        //System.out.println("Viewing an existing order. Order ID: " + orders.get(orders.size() - 1).getOrderId() + ", Order Time: " + orders.get(orders.size() - 1).getOrderTime());
         System.out.println("Please select an order to view by entering the corresponding number (1-" + orders.size() + "): ");
         for (int i = 0; i < orders.size(); i++) {
-            System.out.println((i + 1) + ". Order ID: " + orders.get(i).getOrderId());
+            System.out.println((i + 1) + ". Order ID: " + orders.get(i).getOrderId() + ", Order Time: " + orders.get(i).getOrderTime());
         }
 
         System.out.print("Input :");
@@ -296,10 +310,10 @@ public class RestaurantSystem {
             return;
         } 
 
-        System.out.println("generate an invoice for an existing order. Order ID: " + orders.get(orders.size() - 1).getOrderId());
+        System.out.println("generate an invoice for an existing order. Order ID: " + orders.get(orders.size() - 1).getOrderId() + ", Order Time: " + orders.get(orders.size() - 1).getOrderTime());
         System.out.println("Please select an order to generate an invoice for by entering the corresponding number (1-" + orders.size() + "): ");
         for (int i = 0; i < orders.size(); i++) {
-            System.out.println((i + 1) + ". Order ID: " + orders.get(i).getOrderId());
+            System.out.println((i + 1) + ". Order ID: " + orders.get(i).getOrderId() + ", Order Time: " + orders.get(i).getOrderTime());
         }
 
         System.out.print("Input :");
@@ -371,6 +385,9 @@ public class RestaurantSystem {
                 continue;
             }
             inv.withdraw(quantity);
+            if (inv.getWeeklyInventory() < 5) {
+                System.out.println("Warning: Low inventory for " + inv.getName() + " (" + inv.getWeeklyInventory() + " left)");
+            }
 
             selectedItem.setQuantity(quantity);
             System.out.println("You selected: " + selectedItem.getName() + " x" + selectedItem.getQuantity() +" - $" + selectedItem.getPrice());
