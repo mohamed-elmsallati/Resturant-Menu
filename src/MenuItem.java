@@ -3,6 +3,9 @@ public class MenuItem {
     private double price;
     private String category;
     private int quantity;
+    private int Weekly;
+    private int Monthly;
+    private int Yearly;
 
     public MenuItem() {
         this.name = "";
@@ -24,6 +27,15 @@ public class MenuItem {
         this.category = category;
     }
 
+    public MenuItem(String name, double price, String category, int Weekly, int Monthly, int Yearly) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.Weekly = Weekly;
+        this.Monthly = Monthly;
+        this.Yearly = Yearly;
+    }
+
     public String getName() {
         return name;
     }
@@ -38,6 +50,18 @@ public class MenuItem {
 
     public int getQuantity(){
         return quantity;
+    }
+
+    public int getWeekly(){
+        return Weekly;
+    }
+
+    public int getMonthly(){
+        return Monthly;
+    }
+
+    public int getYearly(){
+        return Yearly;
     }
 
     public double getTotal(){

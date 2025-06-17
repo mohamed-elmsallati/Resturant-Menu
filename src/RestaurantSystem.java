@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class RestaurantSystem {
     private ArrayList<Order> orders;
-    private static int orderCounter = 0; 
+    private static int orderCounter = 0;
     private static final Scanner sharedScanner = new Scanner(System.in);
     private Menu menu;
     public ArrayList<Inventory> inventories = new ArrayList<>();
@@ -12,10 +12,9 @@ public class RestaurantSystem {
         this.orders = new ArrayList<>();
         this.menu = new Menu();
         for (MenuItem item : menu.getItems()) {
-            inventories.add(new Inventory(item.getName()));
+            inventories.add(new Inventory(item.getName(),item.getWeekly(),item.getMonthly(),item.getYearly()));
         }
     }
-    
 
     private Scanner getScanner() {
         return sharedScanner;
@@ -34,19 +33,19 @@ public class RestaurantSystem {
         return null;
     }
 
-    private static void displayMainMenu() {
-        System.out.println("Please select an option from the menu below:");
-        System.out.println("1. New Order");
-        System.out.println("2. Modify Order");
-        System.out.println("3. Cancel Order");
-        System.out.println("4. View Order");
-        System.out.println("5. Invoice");
-        System.out.println("6. Inventory");
-        System.out.println("7. Exit");
-        System.out.println("Please enter your choice (1-7): ");
+    private void displayMainMenu() {
+    System.out.println("\n========== Fast-Food Restaurant System ==========");
+    System.out.println("1. New Order");
+    System.out.println("2. Modify Order");
+    System.out.println("3. Cancel Order");
+    System.out.println("4. View Order");
+    System.out.println("5. Generate Invoice");
+    System.out.println("6. Inventory Management");
+    System.out.println("7. Exit");
+    System.out.println("===============================================");
     }
 
-   
+
     public void run() {
         boolean running = true;
 
@@ -57,10 +56,10 @@ public class RestaurantSystem {
                 if (orders.get(i).getItems().isEmpty()) {
                     orders.remove(i);
                     removed = true;
-                    break; 
+                    break;
                 }
                 else {
-                    orders.get(i).mergeDuplicateItems(); 
+                    orders.get(i).mergeDuplicateItems();
                 }
             }
 
@@ -92,6 +91,7 @@ public class RestaurantSystem {
                     break;
                 case 6:
                     System.out.println("Enter Action: \n1.View Inventory\n2.Restock");
+                    System.out.print("Input: ");
                     int inventoryAction = getScanner().nextInt();
                     switch (inventoryAction) {
                         case 1:
@@ -102,20 +102,59 @@ public class RestaurantSystem {
                             }
                             break;
                         case 2:
-                            System.out.println("Enter Restock Type: \n1.Weekly\n2.Monthly\n3.Yearly");
+                            System.out.println("Do you want to Restock to (1.all Items/2.one Item)");
                             System.out.print("Input: ");
-                            int restockType = getScanner().nextInt();
-                            System.out.println("Enter the name of the item to restock:");
                             getScanner().nextLine();
-                            String restockItemName = getScanner().nextLine();
-                            Inventory inventoryToRestock = getInventoryByName(restockItemName);
-                            if (inventoryToRestock != null) {
-                                inventoryToRestock.restock(restockType);
-                                System.out.println(restockItemName + " restocked successfully!");
-                            } else {
-                                System.out.println("Item not found.");
+
+                            int restockFor = getScanner().nextInt();
+
+                            switch (restockFor) {
+                                case 1:
+                                    System.out.println("Restocking all items...");
+                                    System.out.println("Select restock type: \n1. Weekly\n2. Monthly\n3. Yearly");
+                                    System.out.print("Input: ");
+                                    int restockTypeChoice = getScanner().nextInt();
+
+                                    if (restockTypeChoice < 1 || restockTypeChoice > 3) {
+                                        System.out.println("Invalid restock type. Please try again.");
+                                        break;
+                                    }
+                                    for (Inventory inventory : inventories) {
+                                        inventory.restock(restockTypeChoice);
+                                        System.out.println(inventory.getName() + " restocked successfully!");
+                                    }
+                                    break;
+                                
+                                case 2:
+                                    System.out.print("Enter the name of the item to restock:");
+                                    getScanner().nextLine();
+                                    String restockItemName = getScanner().nextLine();
+                                    Inventory inventoryToRestock = getInventoryByName(restockItemName);
+
+                                    System.out.println("Select restock type: \n1. Weekly\n2. Monthly\n3. Yearly");
+                                    System.out.print("Input: ");
+                                    int restockType = getScanner().nextInt();
+
+                                    if (restockType < 1 || restockType > 3) {
+                                        System.out.println("Invalid restock type. Please try again.");
+                                        break;
+                                    }
+
+                                    if (inventoryToRestock != null) {
+                                        inventoryToRestock.restock(restockType);
+                                        System.out.println(restockItemName + " restocked successfully!");
+                                    } else {
+                                        System.out.println("Item not found.");
+                                    }
+                                    break;
+                                
+                                default:
+                                    System.out.println("Invalid Input! Please try again.");
+                                    break;
                             }
+                            
                             break;
+
                         default:
                             System.out.println("Invalid Input! Please try again.");
                             break;
@@ -136,25 +175,24 @@ public class RestaurantSystem {
         Order newOrder = new Order(orderCounter);
         boolean addingItems = true;
         while (addingItems) {
-            getMenu().displayItems();
+            getMenu().displayItems(inventories);
 
-            System.out.println("Enter item name and quantity to add to the order, or Exit to finish adding items:");
+            System.out.println("enter the number of the item you want to add to the order (1-" + getMenu().getItems().size() + "), or 0 to finish adding items:");
             System.out.print("Input: ");
             getScanner().nextLine();
-            String itemNameInput = getScanner().nextLine();
+            int itemIndex = getScanner().nextInt() - 1;
 
-            if (itemNameInput.equalsIgnoreCase("Exit")) {
-                addingItems = false;
+            if (itemIndex == -1) {
+                System.out.println("Finished adding items to the order.");
+                break;
+            }
+
+            if (itemIndex < 0 || itemIndex >= getMenu().getItems().size()) {
+                System.out.println("Invalid item number. Please try again.");
                 continue;
             }
 
-            MenuItem menuItem = null;
-            for (MenuItem item : getMenu().getItems()) {
-                if (item.getName().equalsIgnoreCase(itemNameInput)) {
-                    menuItem = item;
-                    break;
-                }
-            }
+            MenuItem menuItem = getMenu().getItems().get(itemIndex);
             if (menuItem == null) {
                 System.out.println("Item not found. Please try again.");
                 continue;
@@ -242,7 +280,7 @@ public class RestaurantSystem {
             System.out.println("Invalid choice. Please try again.");
         }
     }
-        
+
 
     private void cancelOrder() {
         if (orders.isEmpty()) {
@@ -273,8 +311,8 @@ public class RestaurantSystem {
             }
         }
 
-        Order selectedOrder = orders.get(orderChoice - 1); 
-        orders.remove(selectedOrder); 
+        Order selectedOrder = orders.get(orderChoice - 1);
+        orders.remove(selectedOrder);
 
         System.out.println("Order cancelled successfully!");
     }
@@ -308,7 +346,7 @@ public class RestaurantSystem {
         if (orders.isEmpty()) {
             System.out.println("No orders available to generate an invoice.");
             return;
-        } 
+        }
 
         System.out.println("generate an invoice for an existing order. Order ID: " + orders.get(orders.size() - 1).getOrderId() + ", Order Time: " + orders.get(orders.size() - 1).getOrderTime());
         System.out.println("Please select an order to generate an invoice for by entering the corresponding number (1-" + orders.size() + "): ");
@@ -343,31 +381,27 @@ public class RestaurantSystem {
     }
 
     private void addItemsToOrder(Order selectedOrder){
-        
+
         boolean addingItems = true;
         while (addingItems) {
-            getMenu().displayItems();
+            getMenu().displayItems(inventories);
 
-            System.out.println("Enter the name of the item you want to add to the order, or type 'Exit' to finish adding items:");
-            System.out.print("Input :");
-            String itemChoice = getScanner().nextLine();
-            MenuItem selectedItem = new MenuItem();
+            System.out.println("enter the number of the item you want to add to the order (1-" + getMenu().getItems().size() + "), or 0 to finish adding items:");
+            System.out.print("Input: ");
+            int itemChoice = getScanner().nextInt();
+            getScanner().nextLine(); 
 
-            if (itemChoice.equalsIgnoreCase("Exit")) {
-                break; 
+            if (itemChoice < 0 || itemChoice > getMenu().getItems().size() + 1) {
+                System.out.println("Invalid item number. Please try again.");
+                continue;
             }
-            for (MenuItem item : getMenu().getItems()) {
-                if (item.getName().equalsIgnoreCase(itemChoice)) {
-                    selectedItem = item;
-                    break;
-                }
-                else {
-                    System.out.println("Item not found. Please try again.");
-                    continue;
-                }
+            if (itemChoice == 0) {
+                System.out.println("Finished adding items to the order.");
+                break;
             }
 
-            System.out.println("Enter the quantity for " + itemChoice + ":");
+            MenuItem selectedItem = getMenu().getItems().get(itemChoice - 1);
+            System.out.println("Enter the quantity for " + selectedItem.getName() + ":");
             System.out.print("Input :");
             int quantity = getScanner().nextInt();
 
@@ -390,8 +424,7 @@ public class RestaurantSystem {
             }
 
             selectedItem.setQuantity(quantity);
-            System.out.println("You selected: " + selectedItem.getName() + " x" + selectedItem.getQuantity() +" - $" + selectedItem.getPrice());
-            
+
             MenuItem orderItem = new MenuItem(selectedItem.getName(), selectedItem.getPrice(), selectedItem.getCategory(), quantity);
             System.out.println("You selected: " + orderItem.getName() + " x" + orderItem.getQuantity() +" - $" + orderItem.getPrice());
             selectedOrder.addItem(orderItem);
@@ -409,7 +442,7 @@ public class RestaurantSystem {
     private void removeItemsFromOrder(Order selectedOrder){
         boolean removingItems = true;
         while (removingItems) {
-            
+
             System.out.println("Order ID: " + selectedOrder.getOrderId());
             ArrayList<MenuItem> items = selectedOrder.getItems();
             if (items.isEmpty()) {
@@ -425,12 +458,12 @@ public class RestaurantSystem {
             System.out.print("Input :");
             String itemChoice = getScanner().nextLine();
 
-            
+
             if (itemChoice.equalsIgnoreCase("Exit")) {
                 break;
             }
 
-            
+
             MenuItem selectedItem = new MenuItem();
             for (MenuItem item : getMenu().getItems()) {
                 if (item.getName().equalsIgnoreCase(itemChoice)) {
