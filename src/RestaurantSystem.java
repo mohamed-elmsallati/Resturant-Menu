@@ -51,22 +51,23 @@ public class RestaurantSystem {
 
         while (running) {
             while (true) {
-            boolean removed = false;
-            for (int i = 0; i < orders.size(); i++) {
-                if (orders.get(i).getItems().isEmpty()) {
-                    orders.remove(i);
-                    removed = true;
+                boolean removed = false;
+                for (int i = 0; i < orders.size(); i++) {
+                    if (orders.get(i).getItems().isEmpty()) {
+                        orders.remove(i);
+                        removed = true;
+                        break;
+                    }
+
+                     else {
+                        orders.get(i).mergeDuplicateItems();
+                    }
+
+                }
+
+                if (!removed) {
                     break;
                 }
-                else {
-                    orders.get(i).mergeDuplicateItems();
-                }
-            }
-
-            if (!removed) {
-            break;
-                }
-
             }
 
             displayMainMenu();
@@ -77,18 +78,23 @@ public class RestaurantSystem {
                 case 1:
                     newOrder();
                     break;
+                
                 case 2:
                     modifyOrder();
                     break;
+                
                 case 3:
                     cancelOrder();
                     break;
+                
                 case 4:
                     viewOrder();
                     break;
+                
                 case 5:
                     generateInvoice();
                     break;
+                
                 case 6:
                     System.out.println("Enter Action: \n1.View Inventory\n2.Restock");
                     System.out.print("Input: ");
@@ -101,6 +107,7 @@ public class RestaurantSystem {
                                         ", Yearly Inventory: " + inventory.getYearlyInventory());
                             }
                             break;
+                        
                         case 2:
                             System.out.println("Do you want to Restock to (1.all Items/2.one Item)");
                             System.out.print("Input: ");
@@ -388,7 +395,7 @@ public class RestaurantSystem {
 
             System.out.println("enter the number of the item you want to add to the order (1-" + getMenu().getItems().size() + "), or 0 to finish adding items:");
             System.out.print("Input: ");
-            int itemChoice = getScanner().nextInt();
+            int itemChoice = getScanner().nextInt() ;
             getScanner().nextLine(); 
 
             if (itemChoice < 0 || itemChoice > getMenu().getItems().size() + 1) {
@@ -454,27 +461,24 @@ public class RestaurantSystem {
                 System.out.println((i + 1) + ". Item: " + item.getName() + ", x" + item.getQuantity()  + ", Price: $" + item.getPrice());
             }
 
-            System.out.println("Enter the name of the item you want to remove:");
+            System.out.println("Enter the number of the item you want to remove (1-" + selectedOrder.getItems().size() + "), or 0 to finish removing items:");
             System.out.print("Input :");
-            String itemChoice = getScanner().nextLine();
+            int itemChoice = getScanner().nextInt();
+            getScanner().nextLine();
 
 
-            if (itemChoice.equalsIgnoreCase("Exit")) {
+            if (itemChoice < 1 || itemChoice > selectedOrder.getItems().size() ){
+                System.out.println("Invalid choice. Please try again.");
+                continue;
+            }
+            if (itemChoice == 0) {
+                System.out.println("Finished removing items from the order.");
                 break;
             }
 
 
-            MenuItem selectedItem = new MenuItem();
-            for (MenuItem item : getMenu().getItems()) {
-                if (item.getName().equalsIgnoreCase(itemChoice)) {
-                    selectedItem = item;
-                    break;
-                }
-                else {
-                    System.out.println("Item not found. Please try again.");
-                    continue;
-                }
-            }
+            MenuItem selectedItem = selectedOrder.getItems().get(itemChoice - 1);
+
             System.out.println("You selected to remove: " + selectedItem.getName() + " x" + selectedItem.getQuantity() + " - $" + selectedItem.getPrice());
             Inventory inv = getInventoryByName(selectedItem.getName());
             if (inv == null) {
