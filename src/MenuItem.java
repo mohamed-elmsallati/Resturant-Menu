@@ -3,6 +3,8 @@ public class MenuItem {
     private double price;
     private String category;
     private int quantity;
+
+    private int Daily;
     private int Weekly;
     private int Monthly;
     private int Yearly;
@@ -36,6 +38,16 @@ public class MenuItem {
         this.Yearly = Yearly;
     }
 
+    public MenuItem(String name, double price, String category,int Daily  ,int Weekly, int Monthly, int Yearly) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.Daily = Daily;
+        this.Weekly = Weekly;
+        this.Monthly = Monthly;
+        this.Yearly = Yearly;
+    }
+
     public String getName() {
         return name;
     }
@@ -50,6 +62,10 @@ public class MenuItem {
 
     public int getQuantity(){
         return quantity;
+    }
+
+    public int getDaily(){
+        return Daily;
     }
 
     public int getWeekly(){
